@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federal Reserve Policy Simulator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            color: #374151;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            color: #6b7280;
+        }
+        
+        .scenario-box {
+            background: #dbeafe;
+            border: 2px solid #93c5fd;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .scenario-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 12px;
+        }
+        
+        .scenario-description {
+            margin-bottom: 16px;
+        }
+        
+        .scenario-context {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+        
+        .indicators {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        
+        .indicator {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .indicator-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .indicator-label {
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .indicator-status {
+            font-size: 0.875rem;
+            margin-left: auto;
+        }
+        
+        .status-above { color: #ea580c; }
+        .status-below { color: #dc2626; }
+        .status-target { color: #16a34a; }
+        
+        .indicator-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+        
+        .indicator-target {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        
+        .policies-box {
+            background: #f3f4f6;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .policies-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+        
+        .policies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        
+        .policy-card {
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .policy-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        
+        .policy-icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+        }
+        
+        .policy-title {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        
+        .policy-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .policy-option {
+            display: flex;
+            align-items: center;
+        }
+        
+        .policy-option input {
+            margin-right: 8px;
+        }
+        
+        .submit-btn {
+            display: block;
+            margin: 0 auto 24px;
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .submit-btn:hover {
+            background: #1d4ed8;
+        }
+        
+        .feedback-box {
+            background: #d1fae5;
+            border: 2px solid #6ee7b7;
+            border-radius: 8px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .feedback-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #065f46;
+            margin-bottom: 16px;
+        }
+        
+        .feedback-item {
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            margin-bottom: 16px;
+        }
+        
+        .feedback-correct {
+            background: #d1fae5;
+            border-color: #6ee7b7;
+        }
+        
+        .feedback-incorrect {
+            background: #fee2e2;
+            border-color: #fca5a5;
+        }
+        
+        .feedback-item h3 {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+        
+        .correct-text {
+            color: #059669;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .explanation {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+        
+        .detailed-feedback {
+            font-size: 0.875rem;
+        }
+        
+        .feedback-correct .detailed-feedback {
+            color: #047857;
+        }
+        
+        .feedback-incorrect .detailed-feedback {
+            color: #b91c1c;
+        }
+        
+        .next-btn {
+            display: block;
+            margin: 24px auto 0;
+            background: #059669;
+            color: white;
+            font-weight: 600;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .next-btn:hover {
+            background: #047857;
+        }
+        
+        .scenario-counter {
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        
+        @media (max-width: 768px) {
+            .indicators {
+                grid-template-columns: 1fr;
+            }
+            
+            .policies-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Federal Reserve Policy Simulator</h1>
+            <p>Make monetary policy decisions to reach economic targets</p>
+        </div>
+
+        <div class="scenario-box">
+            <h2 class="scenario-title">Current Economic Situation</h2>
+            <div class="scenario-description" id="scenarioDescription"></div>
+            <div class="scenario-context" id="scenarioContext"></div>
+            
+            <div class="indicators">
+                <div class="indicator">
+                    <div class="indicator-header">
+                        <span class="indicator-label">GDP Growth (Annual)</span>
+                        <span class="indicator-status" id="gdpStatus"></span>
+                    </div>
+                    <div class="indicator-value" id="gdpValue"></div>
+                    <div class="indicator-target">Target: 2.0%</div>
+                </div>
+                
+                <div class="indicator">
+                    <div class="indicator-header">
+                        <span class="indicator-label">Inflation Rate (CPI)</span>
+                        <span class="indicator-status" id="cpiStatus"></span>
+                    </div>
+                    <div class="indicator-value" id="cpiValue"></div>
+                    <div class="indicator-target">Target: 2.0%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="policies-box">
+            <h2 class="policies-title">Your Policy Decisions</h2>
+            
+            <div class="policies-grid">
+                <div class="policy-card">
+                    <div class="policy-header">
+                        <svg class="policy-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"/>
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"/>
+                        </svg>
+                        <h3 class="policy-title">Federal Funds Rate</h3>
+                    </div>
+                    <div class="policy-options">
+                        <label class="policy-option">
+                            <input type="radio" name="federalFundsRate" value="lower">
+                            Lower the rate
+                        </label>
+                        <label class="policy-option">
+                            <input type="radio" name="federalFundsRate" value="maintain" checked>
+                            Keep unchanged
+                        </label>
+                        <label class="policy-option">
+                            <input type="radio" name="federalFundsRate" value="raise">
+                            Raise the rate
+                        </label>
+                    </div>
+                </div>
+
+                <div class="policy-card">
+                    <div class="policy-header">
+                        <svg class="policy-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm3 2a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"/>
+                        </svg>
+                        <h3 class="policy-title">Open Market Operations</h3>
+                    </div>
+                    <div class="policy-options">
+                        <label class="policy-option">
+                            <input type="radio" name="openMarketOps" value="buy">
+                            Buy bonds
+                        </label>
+                        <label class="policy-option">
+                            <input type="radio" name="openMarketOps" value="maintain" checked>
+                            No bond operations
+                        </label>
+                        <label class="policy-option">
+                            <input type="radio" name="openMarketOps" value="sell">
+                            Sell bonds
+                        </label>
+                    </div>
+                </div>
+
+                <div class="policy-card">
+                    <div class="policy-header">
+                        <svg class="policy-icon" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1zM11 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-3zm2 2v-1h1v1h-1z" clip-rule="evenodd"/>
+                        </svg>
+                        <h3 class="policy-title">Reserve Requirement</h3>
+                    </div>
+                    <div class="policy-options">
+                        <label class="policy-option">
+                            <input type="radio" name="reserveRequirement" value="lower">
+                            Lower requirement
+                        </label>
+                        <label class="policy-option">
+                            <input type="radio" name="reserveRequirement" value="maintain" checked>
+                            Keep unchanged
+                        </label>
+                        <label class="policy-option">
+                            <input type="radio" name="reserveRequirement" value="raise">
+                            Raise requirement
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="submit-btn" id="submitBtn" onclick="submitDecisions()">
+            Submit My Policy Decisions
+        </button>
+
+        <div class="feedback-box" id="feedbackBox" style="display: none;">
+            <h2 class="feedback-title">Analysis of Your Decisions</h2>
+            <div id="feedbackContent"></div>
+            <button class="next-btn" onclick="nextScenario()">
+                Try Another Scenario
+            </button>
+        </div>
+
+        <div class="scenario-counter" id="scenarioCounter"></div>
+    </div>
+
+    <script>
+        const scenarios = [
+            {
+                description: "The economy is showing signs of recession",
+                gdp: -1.3,
+                cpi: 0.8,
+                context: "Unemployment is rising and consumer spending has declined."
+            },
+            {
+                description: "The economy is overheating with high inflation",
+                gdp: 4.8,
+                cpi: 5.2,
+                context: "Prices are rising rapidly and the economy may be growing too fast."
+            },
+            {
+                description: "The economy is experiencing deflation",
+                gdp: 0.2,
+                cpi: -1.4,
+                context: "Prices are falling and economic growth has nearly stalled."
+            },
+            {
+                description: "The economy is struggling with slow growth and low inflation",
+                gdp: 0.5,
+                cpi: 0.3,
+                context: "Both economic growth and inflation are well below target levels."
+            }
+        ];
+
+        let currentScenarioIndex = 0;
+        let hasAttempted = false;
+
+        function getStatus(value, target, type) {
+            if (type === 'gdp') {
+                if (value < 1) return { text: "Below Target", class: "status-below" };
+                if (value > 3) return { text: "Above Target", class: "status-above" };
+                return { text: "Near Target", class: "status-target" };
+            } else {
+                if (value < 1) return { text: "Below Target", class: "status-below" };
+                if (value > 3) return { text: "Above Target", class: "status-above" };
+                return { text: "Near Target", class: "status-target" };
+            }
+        }
+
+        function loadScenario() {
+            const scenario = scenarios[currentScenarioIndex];
+            
+            document.getElementById('scenarioDescription').textContent = scenario.description;
+            document.getElementById('scenarioContext').textContent = scenario.context;
+            
+            const gdpStatus = getStatus(scenario.gdp, 2, 'gdp');
+            const cpiStatus = getStatus(scenario.cpi, 2, 'cpi');
+            
+            document.getElementById('gdpValue').textContent = scenario.gdp + '%';
+            document.getElementById('cpiValue').textContent = scenario.cpi + '%';
+            document.getElementById('gdpStatus').textContent = gdpStatus.text;
+            document.getElementById('cpiStatus').textContent = cpiStatus.text;
+            document.getElementById('gdpStatus').className = 'indicator-status ' + gdpStatus.class;
+            document.getElementById('cpiStatus').className = 'indicator-status ' + cpiStatus.class;
+            
+            document.getElementById('scenarioCounter').textContent = `Scenario ${currentScenarioIndex + 1} of ${scenarios.length}`;
+        }
+
+        function getPolicyValues() {
+            return {
+                federalFundsRate: document.querySelector('input[name="federalFundsRate"]:checked').value,
+                openMarketOps: document.querySelector('input[name="openMarketOps"]:checked').value,
+                reserveRequirement: document.querySelector('input[name="reserveRequirement"]:checked').value
+            };
+        }
+
+        function analyzeDecisions() {
+            const scenario = scenarios[currentScenarioIndex];
+            const policies = getPolicyValues();
+            const needsStimulus = (scenario.gdp < 2 && scenario.cpi < 2);
+            const needsCooling = (scenario.gdp > 3 && scenario.cpi > 3);
+
+            const analysis = {};
+
+            // Federal Funds Rate Analysis
+            if (policies.federalFundsRate === 'lower') {
+                const isCorrect = needsStimulus;
+                analysis.federalFundsRate = {
+                    isCorrect,
+                    correctText: isCorrect ? "Your answer is correct!" : "",
+                    explanation: "Lower rates make borrowing cheaper, encouraging spending and investment.",
+                    detailedFeedback: isCorrect 
+                        ? "Lowering interest rates will stimulate spending and growth, pushing GDP higher toward the 2% target. It will also increase inflation, pushing CPI higher toward the 2% target."
+                        : `This is incorrect. With ${scenario.cpi > 3 ? 'high inflation' : 'strong growth'}, lowering interest rates will ${scenario.cpi > 3 ? 'push inflation even higher, making the problem worse' : 'overheat the economy'}. Instead, you should raise interest rates to make borrowing less attractive, reduce spending, and ${scenario.cpi > 3 ? 'bring inflation back down toward 2%' : 'cool down economic growth'}.`
+                };
+            } else if (policies.federalFundsRate === 'raise') {
+                const isCorrect = needsCooling;
+                analysis.federalFundsRate = {
+                    isCorrect,
+                    correctText: isCorrect ? "Your answer is correct!" : "",
+                    explanation: "Higher rates make borrowing more expensive, cooling down the economy.",
+                    detailedFeedback: isCorrect
+                        ? "Raising interest rates will make borrowing less attractive, reducing spending and cooling down the economy. This will bring both GDP and inflation back down toward their 2% targets."
+                        : `This is incorrect. With ${scenario.gdp < 2 ? 'weak growth' : 'low inflation'}, raising interest rates will ${scenario.gdp < 2 ? 'further slow the economy when it needs stimulation' : 'push inflation even lower'}. Instead, you should lower interest rates to encourage more borrowing and spending, which will ${scenario.gdp < 2 ? 'boost GDP toward 2%' : 'increase inflation toward 2%'}.`
+                };
+            } else {
+                const isCorrect = (!needsStimulus && !needsCooling);
+                analysis.federalFundsRate = {
+                    isCorrect,
+                    correctText: isCorrect ? "Your answer is correct!" : "",
+                    explanation: "Keeping rates unchanged maintains current economic conditions.",
+                    detailedFeedback: isCorrect
+                        ? "With the economy performing reasonably well, maintaining current rates is the right choice to avoid disrupting economic stability."
+                        : `This is incorrect. The economy clearly needs intervention - ${needsStimulus ? 'both GDP and inflation are too low and need stimulation through lower rates' : 'both GDP and inflation are too high and need cooling through higher rates'}.`
+                };
+            }
+
+            // Open Market Operations Analysis
+            if (policies.openMarketOps === 'buy') {
+                const isCorrect = needsStimulus;
+                analysis.openMarketOps = {
+                    isCorrect,
+                    correctText: isCorrect ? "Your answer is correct!" : "",
+                    explanation: "Buying bonds puts more money into the banking system.",
+                    detailedFeedback: isCorrect
+                        ? "Buying bonds increases the money supply, which will stimulate spending and growth, pushing GDP higher toward 2%. It will also increase inflation, pushing CPI higher toward the 2% target."
+                        : `This is incorrect. With ${scenario.cpi > 3 ? 'high inflation' : 'strong growth'}, buying bonds will increase the money supply and ${scenario.cpi > 3 ? 'push inflation even higher, worsening the problem' : 'overstimulate the economy'}. Instead, you should sell bonds to reduce the money supply and ${scenario.cpi > 3 ? 'help bring inflation back down toward 2%' : 'cool down economic growth'}.`
+                };
+            } else if (policies.openMarketOps === 'sell') {
+                const isCorrect = needsCooling;
+                analysis.openMarketOps = {
+                    isCorrect,
+                    correctText: isCorrect ? "Your answer is correct!" : "",
+                    explanation: "Selling bonds removes money from the banking system.",
+                    detailedFeedback: isCorrect
+                        ? "Selling bonds decreases the money supply, which will reduce spending and cool down the economy. This will bring both GDP and inflation back down toward their 2% targets."
+                        : `This is incorrect. With ${scenario.gdp < 2 ? 'weak growth' : 'low inflation'}, selling bonds will reduce the money supply and ${scenario.gdp < 2 ? 'further weaken the economy when it needs stimulation' : 'push inflation even lower'}. Instead, you should buy bonds to increase the money supply and encourage more spending, which will ${scenario.gdp < 2 ? 'boost GDP toward 2%' : 'increase inflation toward 2%'}.`
+                };
+            } else {
+                const isCorrect = (!needsStimulus && !needsCooling);
+                analysis.openMarketOps = {
+                    isCorrect,
+                    correctText: isCorrect ? "Your answer is correct!" : "",
+                    explanation: "No bond transactions means no change in money supply.",
+                    detailedFeedback: isCorrect
+                        ? "With the economy performing reasonably well, maintaining the current money supply is appropriate to avoid unnecessary disruption."
+                        : `This is incorrect. The economy needs intervention - ${needsStimulus ? 'you should buy bonds to increase the money supply and stimulate growth and inflation toward 2%' : 'you should sell bonds to decrease the money supply and cool down the overheated economy'}.`
+                };
+            }
+
+            // Reserve Requirement Analysis
+            if (policies.reserveRequirement === 'lower') {
+                const isCorrect = needsStimulus;
+                analysis.reserveRequirement = {
+                    isCorrect,
+                    correctText: isCorrect ? "Your answer is correct!" : "",
+                    explanation: "Lower requirements let banks lend more of their deposits.",
+                    detailedFeedback: isCorrect
+                        ? "Lowering reserve requirements allows banks to lend more money, which will stimulate spending and growth, pushing GDP higher toward 2%. It will also increase inflation, pushing CPI higher toward the 2% target."
+                        : `This is incorrect. With ${scenario.cpi > 3 ? 'high inflation' : 'strong growth'}, lowering reserve requirements will increase bank lending and ${scenario.cpi > 3 ? 'push inflation even higher, making the problem worse' : 'overstimulate the already strong economy'}. Instead, you should raise reserve requirements to limit bank lending and ${scenario.cpi > 3 ? 'help bring inflation back down toward 2%' : 'cool down economic growth'}.`
+                };
+            } else if (policies.reserveRequirement === 'raise') {
+                const isCorrect = needsCooling;
+                analysis.reserveRequirement = {
+                    isCorrect,
+                    correctText: isCorrect ? "Your answer is correct!" : "",
+                    explanation: "Higher requirements force banks to hold more money in reserve.",
+                    detailedFeedback: isCorrect
+                        ? "Raising reserve requirements forces banks to lend less money, which will reduce spending and cool down the economy. This will bring both GDP and inflation back down toward their 2% targets."
+                        : `This is incorrect. With ${scenario.gdp < 2 ? 'weak growth' : 'low inflation'}, raising reserve requirements will restrict bank lending and ${scenario.gdp < 2 ? 'further weaken the economy when it needs stimulation' : 'push inflation even lower'}. Instead, you should lower reserve requirements to increase bank lending, which will ${scenario.gdp < 2 ? 'boost GDP toward 2%' : 'increase inflation toward 2%'}.`
+                };
+            } else {
+                const isCorrect = (!needsStimulus && !needsCooling);
+                analysis.reserveRequirement = {
+                    isCorrect,
+                    correctText: isCorrect ? "Your answer is correct!" : "",
+                    explanation: "No change in how much banks must keep in reserve.",
+                    detailedFeedback: isCorrect
+                        ? "With the economy performing reasonably well, maintaining current reserve requirements is appropriate to avoid unnecessary changes to bank lending."
+                        : `This is incorrect. The economy needs intervention - ${needsStimulus ? 'you should lower reserve requirements to increase bank lending and stimulate growth and inflation toward 2%' : 'you should raise reserve requirements to decrease bank lending and cool down the overheated economy'}.`
+                };
+            }
+
+            return analysis;
+        }
+
+        function submitDecisions() {
+            hasAttempted = true;
+            const analysis = analyzeDecisions();
+            
+            let feedbackHtml = '';
+            const policies = ['federalFundsRate', 'openMarketOps', 'reserveRequirement'];
+            const titles = ['Federal Funds Rate Decision', 'Open Market Operations Decision', 'Reserve Requirement Decision'];
+            
+            policies.forEach((policy, index) => {
+                const item = analysis[policy];
+                const cssClass = item.isCorrect ? 'feedback-correct' : 'feedback-incorrect';
+                
+                feedbackHtml += `
+                    <div class="feedback-item ${cssClass}">
+                        <h3>${titles[index]}</h3>
+                        ${item.correctText ? `<div class="correct-text">${item.correctText}</div>` : ''}
+                        <div class="explanation">${item.explanation}</div>
+                        <div class="detailed-feedback">${item.detailedFeedback}</div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('feedbackContent').innerHTML = feedbackHtml;
+            document.getElementById('feedbackBox').style.display = 'block';
+            document.getElementById('submitBtn').style.display = 'none';
+        }
+
+        function nextScenario() {
+            currentScenarioIndex = (currentScenarioIndex + 1) % scenarios.length;
+            hasAttempted = false;
+            
+            // Reset form
+            document.querySelector('input[name="federalFundsRate"][value="maintain"]').checked = true;
+            document.querySelector('input[name="openMarketOps"][value="maintain"]').checked = true;
+            document.querySelector('input[name="reserveRequirement"][value="maintain"]').checked = true;
+            
+            // Hide feedback and show submit button
+            document.getElementById('feedbackBox').style.display = 'none';
+            document.getElementById('submitBtn').style.display = 'block';
+            
+            loadScenario();
+        }
+
+        // Initialize
+        loadScenario();
+    </script>
+</body>
+</html>
