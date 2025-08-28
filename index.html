@@ -408,13 +408,28 @@
     </div>
 
     <script>
-        const scenarios = [
-            // Below Target Scenarios (Need Stimulus)
+        // Shuffle function to randomize array order
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        const baseScenarios = [
             {
                 description: "The economy is in a deep recession",
                 gdp: -2.1,
                 cpi: 0.4,
                 context: "Unemployment has spiked to 8.5% and consumer confidence is at historic lows."
+            },
+            {
+                description: "The economy is severely overheating",
+                gdp: 6.2,
+                cpi: 7.1,
+                context: "Labor shortages are widespread and supply chains are severely strained."
             },
             {
                 description: "The economy is experiencing severe deflation",
@@ -423,30 +438,16 @@
                 context: "Prices are falling rapidly and businesses are postponing investments."
             },
             {
+                description: "Strong growth is driving dangerous price increases",
+                gdp: 4.3,
+                cpi: 4.9,
+                context: "Wage-price spirals are emerging and inflation expectations are rising."
+            },
+            {
                 description: "Economic growth has stalled with low inflation",
                 gdp: 0.3,
                 cpi: 0.7,
                 context: "Manufacturing output is declining and wage growth is minimal."
-            },
-            {
-                description: "The economy is struggling with weak consumer demand",
-                gdp: 0.6,
-                cpi: 0.9,
-                context: "Retail sales have dropped and housing starts are down significantly."
-            },
-            {
-                description: "Recovery is slow with persistent low inflation",
-                gdp: 1.1,
-                cpi: 0.8,
-                context: "Job creation is weak and productivity growth remains sluggish."
-            },
-            
-            // Above Target Scenarios (Need Cooling)
-            {
-                description: "The economy is severely overheating",
-                gdp: 6.2,
-                cpi: 7.1,
-                context: "Labor shortages are widespread and supply chains are severely strained."
             },
             {
                 description: "Inflation is spiraling out of control",
@@ -455,16 +456,22 @@
                 context: "Energy and food prices are surging, eroding consumer purchasing power."
             },
             {
+                description: "The economy is struggling with weak consumer demand",
+                gdp: 0.6,
+                cpi: 0.9,
+                context: "Retail sales have dropped and housing starts are down significantly."
+            },
+            {
                 description: "The economy is growing too fast with high inflation",
                 gdp: 4.9,
                 cpi: 5.7,
                 context: "Asset bubbles are forming and credit growth is excessive."
             },
             {
-                description: "Strong growth is driving dangerous price increases",
-                gdp: 4.3,
-                cpi: 4.9,
-                context: "Wage-price spirals are emerging and inflation expectations are rising."
+                description: "Recovery is slow with persistent low inflation",
+                gdp: 1.1,
+                cpi: 0.8,
+                context: "Job creation is weak and productivity growth remains sluggish."
             },
             {
                 description: "Economic expansion is creating inflationary pressure",
@@ -473,6 +480,9 @@
                 context: "Capacity utilization is at maximum and commodity prices are surging."
             }
         ];
+
+        // Randomize the scenarios when the page loads
+        const scenarios = shuffleArray(baseScenarios);
 
         let currentScenarioIndex = 0;
         let hasAttempted = false;
