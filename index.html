@@ -409,29 +409,68 @@
 
     <script>
         const scenarios = [
+            // Below Target Scenarios (Need Stimulus)
             {
-                description: "The economy is showing signs of recession",
-                gdp: -1.3,
+                description: "The economy is in a deep recession",
+                gdp: -2.1,
+                cpi: 0.4,
+                context: "Unemployment has spiked to 8.5% and consumer confidence is at historic lows."
+            },
+            {
+                description: "The economy is experiencing severe deflation",
+                gdp: -0.8,
+                cpi: -1.8,
+                context: "Prices are falling rapidly and businesses are postponing investments."
+            },
+            {
+                description: "Economic growth has stalled with low inflation",
+                gdp: 0.3,
+                cpi: 0.7,
+                context: "Manufacturing output is declining and wage growth is minimal."
+            },
+            {
+                description: "The economy is struggling with weak consumer demand",
+                gdp: 0.6,
+                cpi: 0.9,
+                context: "Retail sales have dropped and housing starts are down significantly."
+            },
+            {
+                description: "Recovery is slow with persistent low inflation",
+                gdp: 1.1,
                 cpi: 0.8,
-                context: "Unemployment is rising and consumer spending has declined."
+                context: "Job creation is weak and productivity growth remains sluggish."
+            },
+            
+            // Above Target Scenarios (Need Cooling)
+            {
+                description: "The economy is severely overheating",
+                gdp: 6.2,
+                cpi: 7.1,
+                context: "Labor shortages are widespread and supply chains are severely strained."
             },
             {
-                description: "The economy is overheating with high inflation",
-                gdp: 4.8,
-                cpi: 5.2,
-                context: "Prices are rising rapidly and the economy may be growing too fast."
+                description: "Inflation is spiraling out of control",
+                gdp: 5.4,
+                cpi: 6.8,
+                context: "Energy and food prices are surging, eroding consumer purchasing power."
             },
             {
-                description: "The economy is experiencing deflation",
-                gdp: 0.2,
-                cpi: -1.4,
-                context: "Prices are falling and economic growth has nearly stalled."
+                description: "The economy is growing too fast with high inflation",
+                gdp: 4.9,
+                cpi: 5.7,
+                context: "Asset bubbles are forming and credit growth is excessive."
             },
             {
-                description: "The economy is struggling with slow growth and low inflation",
-                gdp: 0.5,
-                cpi: 0.3,
-                context: "Both economic growth and inflation are well below target levels."
+                description: "Strong growth is driving dangerous price increases",
+                gdp: 4.3,
+                cpi: 4.9,
+                context: "Wage-price spirals are emerging and inflation expectations are rising."
+            },
+            {
+                description: "Economic expansion is creating inflationary pressure",
+                gdp: 3.8,
+                cpi: 4.2,
+                context: "Capacity utilization is at maximum and commodity prices are surging."
             }
         ];
 
